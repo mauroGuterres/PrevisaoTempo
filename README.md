@@ -7,4 +7,5 @@
 
 ***Desenvolvido utilizando Visual Studio 2019 Community*** <br/>
 ***.NET Framework 4.6.1*** <br />
-***Migrations***
+***Migrations*** <br />
+***Entity Framework 6***
