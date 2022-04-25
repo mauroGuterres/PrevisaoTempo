@@ -18,28 +18,28 @@
 
             var estados = new List<Estado>
             {
-                new Estado{Nome="Rio Grande do Sul",UF="RS"},
-                new Estado{Nome="Rio de Janeiro",UF="RJ"},
-                new Estado{Nome="Bahia",UF="BA"},
-                new Estado{Nome="Ceará",UF="CE"},
-                new Estado{Nome="Espirito Santo",UF="ES"},
-                new Estado{Nome="Paraná",UF="PR"},
-                new Estado{Nome="Goiás",UF="GO"},
-                new Estado{Nome="Santa Catarina",UF="SC"}
+                new Estado{Id = 33,Nome="Rio Grande do Sul",UF="RS"},
+                new Estado{Id = 34,Nome="Rio de Janeiro",UF="RJ"},
+                new Estado{Id = 35,Nome="Bahia",UF="BA"},
+                new Estado{Id = 36,Nome="Ceará",UF="CE"},
+                new Estado{Id = 37,Nome="Espirito Santo",UF="ES"},
+                new Estado{Id = 38,Nome="Paraná",UF="PR"},
+                new Estado{Id = 39,Nome="Goiás",UF="GO"},
+                new Estado{Id = 40,Nome="Santa Catarina",UF="SC"}
             };
 
             estados.ForEach(x => context.Estado.AddOrUpdate(u => u.UF, x));
             context.SaveChanges();
 
             var cidades = new List<Cidade> {
-                new Cidade{ Nome = "Porto Alegre",EstadoId = 33 },
-                new Cidade{ Nome = "Niteróí",EstadoId = 34 },
-                new Cidade{ Nome = "Salvador",EstadoId = 35 },
-                new Cidade{ Nome = "Fortaleza",EstadoId = 36 },
-                new Cidade{ Nome = "Vitória",EstadoId = 37 },
-                new Cidade{ Nome = "Curitiba",EstadoId = 38 },
-                new Cidade{ Nome = "Goiânia",EstadoId = 39 },
-                new Cidade{ Nome = "Florianópolis",EstadoId = 40 }
+                new Cidade{Id = 27, Nome = "Porto Alegre",EstadoId = 33 },
+                new Cidade{Id = 28, Nome = "Niteróí",EstadoId = 34 },
+                new Cidade{Id = 29, Nome = "Salvador",EstadoId = 35 },
+                new Cidade{Id = 30, Nome = "Fortaleza",EstadoId = 36 },
+                new Cidade{Id = 31, Nome = "Vitória",EstadoId = 37 },
+                new Cidade{Id = 32, Nome = "Curitiba",EstadoId = 38 },
+                new Cidade{Id = 33, Nome = "Goiânia",EstadoId = 39 },
+                new Cidade{Id = 34, Nome = "Florianópolis",EstadoId = 40 }
             };
 
             cidades.ForEach(x => context.Cidade.AddOrUpdate(y => y.Nome, x));
