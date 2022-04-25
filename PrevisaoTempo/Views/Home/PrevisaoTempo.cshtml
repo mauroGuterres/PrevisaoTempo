@@ -1,0 +1,218 @@
+﻿@using PrevisaoTempo.Models;
+
+@{
+    ViewBag.Title = "Previsao do Tempo";
+    List<Cidade> cidades = ViewBag.Cidades;
+    List<PrevisaoClima> cidadesMaisQuentes = ViewBag.CidadesMaisQuentes;
+    List<PrevisaoClima> cidadesMaisFrias = ViewBag.CidadesMaisFrias;
+}
+@Styles.Render("~/Content/select2")
+
+<h2>Previsao do Tempo</h2>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Cidades mais quentes hoje</h3>
+            </div>
+            <div class="panel-body">
+                @if (cidadesMaisQuentes.Count == 0)
+                {
+                    <div> Sem previsões para a data de hoje!</div>
+                }
+                else
+                {
+                    foreach (var cidade in cidadesMaisQuentes)
+                    {
+                        <div class="col-lg-4">
+                            @cidade.Cidade.Nome / @cidade.Cidade.Estado.UF
+                        </div>
+                        <div class="col-lg-4">
+                            Min @cidade.TemperaturaMinima Cº
+                        </div>
+
+                        <div class="col-lg-4">
+                            Max @cidade.TemperaturaMaxima Cº
+                        </div>
+                    }
+                }
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Cidades mais frias hoje</h3>
+            </div>
+            <div class="panel-body">
+                @if (cidadesMaisFrias.Count == 0)
+                {
+
+
+                    <div> Sem previsões para a data de hoje!</div>
+                }
+                else
+                {
+                    foreach (var cidade in cidadesMaisFrias)
+                    {
+                        <div class="col-lg-4">
+                            @cidade.Cidade.Nome / @cidade.Cidade.Estado.UF
+                        </div>
+                        <div class="col-lg-4">
+                            Min @cidade.TemperaturaMinima Cº
+                        </div>
+
+                        <div class="col-lg-4">
+                            Max @cidade.TemperaturaMaxima Cº
+                        </div>
+                    }
+                }
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-12">
+        <div class="form-group">
+            <label>Cidade:</label>
+            <select type="text" class="form-control select-cidade">
+                <option></option>
+                @foreach (var cidade in cidades)
+                {
+                    <option value="@cidade.Id">@cidade.Nome</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="col-lg-12 form-inline text-center" id="previsao-semana">
+
+        
+
+    </div>
+
+</div>
+
+
+
+
+@section Scripts{
+    @Scripts.Render("~/bundles/select2")
+
+    <script>
+        $(document).ready(function () {
+            var select = $('.select-cidade').select2({
+                placeholder: "Selecione a cidade",
+                allowClear: true
+            });
+
+            select.on('select2:select', function (e) {
+
+                var cidade = e.params.data
+                GetPrevisaoCidade(cidade.id)
+            })
+
+            select.on('select2:clear', function (e) {
+                ClearPrevisao();
+            })
+        });
+
+        function GetPrevisaoCidade(cidadeId) {
+            $.ajax({
+                url: "/Home/GetPrevisaoCidade?cidadeId=" + cidadeId,
+                type: "GET",
+                success: function (data) {
+                    console.log(data);
+                    var previsao = $("#previsao-semana");
+                    ClearPrevisao();
+                    
+                    if (data != null) {
+                        previsao.append('<div class="text-center"><h3>Clima para os próximos sete dias na cidade de ' + data[0].Cidade.Nome + '</h3></div>');                                                
+                        data.forEach(function (item, index) {
+                            
+                            previsao.append('<div class= "form-group" style="margin-right: 0.3em" > ' +
+                                '<div class="panel panel-primary">' +
+                                '<div class="panel-heading">' +
+                                '<h3 class="panel-title">' + GetDiaSemana(item.DataPrevisao) + '</h3>' +
+                                '</div>' +
+                                '<div class="panel-body">' +
+                                '<div>' + GetClima(item.Clima) + ' ' + GetClimaStr(item.Clima) +  '</div>' +
+                                '<div>Minima ' + item.TemperaturaMinima + ' Cº </div>' +
+                                '<div>Maxima ' + item.TemperaturaMaxima + ' Cº </div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>');
+                        });
+                    }
+
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+
+            })
+        }
+
+        function GetDiaSemana(data) {
+            
+            var day = new Date(parseInt(data.replace(/[^0-9 +]/g, ''))).getDay();
+
+            switch (day) {
+                case 0:
+                    return "Domingo";
+                case 1:
+                    return "Segunda Feira";
+                case 2:
+                    return "Terça Feira";
+                case 3:
+                    return "Quarta Feira";
+                case 4:
+                    return "Quinta Feira";
+                case 5:
+                    return "Sexta Feira";
+                case 6:
+                    return "Sábado";                
+            }
+        }
+
+        function GetClima(clima) {
+            debugger;
+            switch (clima) {
+                case 0:
+                    return '<i style="font-size: 3em" class="fas fa-cloud"></i>';
+                case 1:
+                    return '<i style="font-size: 3em" class="fas fa-sun"></i>';
+                case 2:
+                    return '<i style="font-size: 3em" class="fas fa-cloud-showers-heavy"></i>';
+                case 3:
+                    return '<i style="font-size: 3em" class="far fa-sun"></i>';
+            }
+        }
+
+        function GetClimaStr(clima) {
+            debugger;
+            switch (clima) {
+                case 0:
+                    return 'Frio';
+                case 1:
+                    return 'Quente';
+                case 2:
+                    return 'Chuvoso';
+                case 3:
+                    return 'Ensolarado';
+            }
+        }
+
+        function ClearPrevisao() {
+            var previsao = $("#previsao-semana");
+            previsao.html("");
+        }
+
+    </script>
+}
+
+
